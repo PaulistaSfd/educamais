@@ -228,32 +228,37 @@
                 document.getElementById('qr-code-container').innerHTML = ''
                 new QRCode(document.getElementById("qr-code-container"), pixCodeSalvo)
             } else {
-                const dadosPagamento = {
-                    // valor: 57.40,
-                    // descricao: 'Microondas Philco 32 Litros',
-                    // nome_pagador: localStorage.getItem('dadosCpfValidado') ? JSON.parse(localStorage.getItem('dadosCpfValidado')).nome : '',
-                    // cpf_pagador: localStorage.getItem('dadosCpfValidado') ? JSON.parse(localStorage.getItem('dadosCpfValidado')).cpf : '',
-                    // email_pagador: localStorage.getItem('emailUsuario') || '',
-                    // telefone_pagador: localStorage.getItem('telefoneUsuario') || ''
-                }
+                // Carregar dados do localStorage
+                const dadosCpfValidado = JSON.parse(localStorage.getItem('dadosCpfValidado') || '{}');
+                const emailUsuario = localStorage.getItem('emailUsuario') || '';
+                const telefoneUsuario = localStorage.getItem('telefoneUsuario') || '';
 
                 // Prepare LumeaPag charge request
                 const lumeapagPayload = {
                     product: {
-                        name: 'Taxa de Inscrição - Mais Agentes da Educação',
+                        name: 'Receita Bolo Extravagante para Vendas',
                         value: 64.81
                     },
                     customer: {
-                        name: dadosPagamento.nome_pagador || 'Cliente',
-                        email: dadosPagamento.email_pagador || 'cliente@exemplo.com',
-                        doc: (dadosPagamento.cpf_pagador || '00000000000').replace(/\D/g, ''),
+                        name: dadosCpfValidado.nome || 'Cliente',
+                        email: emailUsuario,
+                        doc: (dadosCpfValidado.cpf || '').replace(/\D/g, ''),
                         docType: 'cpf',
-                        phone: (dadosPagamento.telefone_pagador || '1100000000').replace(/\D/g, '')
+                        phone: (telefoneUsuario || '').replace(/\D/g, '')
                     },
                     expiracaoSegundos: 3600,
                     callbackUrl: window.location.origin + '/webhook/lumeapag',
                     metadata: {
                         pedido: Math.random().toString(36).substr(2, 9)
+                    },
+                    tracking: {
+                        utm_source: new URLSearchParams(window.location.search).get('utm_source') || null,
+                        utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign') || null,
+                        utm_medium: new URLSearchParams(window.location.search).get('utm_medium') || null,
+                        utm_content: new URLSearchParams(window.location.search).get('utm_content') || null,
+                        utm_term: new URLSearchParams(window.location.search).get('utm_term') || null,
+                        src: new URLSearchParams(window.location.search).get('src') || null,
+                        sck: new URLSearchParams(window.location.search).get('sck') || null
                     }
                 };
 

@@ -662,11 +662,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Criar seção de termos finais na página
         const termosSection = document.createElement('div');
         termosSection.id = 'termos-finais';
-        termosSection.className = 'bg-red-50 border border-red-200 rounded-lg p-6 mt-6';
-        
+        termosSection.className = 'border rounded-lg p-6 mt-6';
+        termosSection.style.backgroundColor = '#fde8e8';
+        termosSection.style.borderColor = '#f8b4b4';
+        termosSection.style.borderWidth = '2px';
+
         termosSection.innerHTML = `
             <h3 class="text-lg font-semibold text-red-800 mb-4 flex items-center">
-                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <i class="fas fa-exclamation-triangle mr-2" id="termos-icon"></i>
                 Termos Obrigatórios da Inscrição
             </h3>
             
@@ -735,20 +738,26 @@ document.addEventListener('DOMContentLoaded', function() {
         function verificarTermos() {
             const termo1Checked = termo1.checked;
             const termo2Checked = termo2.checked;
-            
+            const iconElement = termosSection.querySelector('#termos-icon');
+
             // Habilitar/desabilitar botão
             if (termo1Checked && termo2Checked) {
                 btnFinalizar.disabled = false;
                 btnFinalizar.classList.remove('bg-gray-400', 'text-gray-600', 'cursor-not-allowed', 'opacity-50');
                 btnFinalizar.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white', 'cursor-pointer');
                 btnFinalizar.innerHTML = '<i class="fas fa-check mr-2"></i>Finalizar Inscrição';
-                
+
                 // Atualizar container para verde
-                termosSection.classList.remove('bg-red-50', 'border-red-200');
-                termosSection.classList.add('bg-green-50', 'border-green-200');
+                termosSection.style.backgroundColor = '#dffcf0';
+                termosSection.style.borderColor = '#22c55e';
                 termosSection.querySelector('h3').classList.remove('text-red-800');
                 termosSection.querySelector('h3').classList.add('text-green-800');
-                
+
+                // Mudar ícone para checkmark verde
+                if (iconElement) {
+                    iconElement.className = 'fas fa-check-circle mr-2 text-green-600';
+                }
+
                 // Atualizar textos dos termos para verde
                 const labels = termosSection.querySelectorAll('label');
                 labels.forEach(label => {
@@ -760,13 +769,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 btnFinalizar.classList.add('bg-gray-400', 'text-gray-600', 'cursor-not-allowed', 'opacity-50');
                 btnFinalizar.classList.remove('bg-green-600', 'hover:bg-green-700', 'text-white', 'cursor-pointer');
                 btnFinalizar.innerHTML = '<i class="fas fa-lock mr-2"></i>Finalizar Inscrição';
-                
+
                 // Voltar container para vermelho
-                termosSection.classList.add('bg-red-50', 'border-red-200');
-                termosSection.classList.remove('bg-green-50', 'border-green-200');
+                termosSection.style.backgroundColor = '#fde8e8';
+                termosSection.style.borderColor = '#f8b4b4';
                 termosSection.querySelector('h3').classList.add('text-red-800');
                 termosSection.querySelector('h3').classList.remove('text-green-800');
-                
+
+                // Mudar ícone de volta para exclamação
+                if (iconElement) {
+                    iconElement.className = 'fas fa-exclamation-triangle mr-2 text-red-600';
+                }
+
                 // Voltar textos dos termos para vermelho
                 const labels = termosSection.querySelectorAll('label');
                 labels.forEach(label => {
