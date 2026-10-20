@@ -239,6 +239,12 @@
                     return;
                 }
 
+                // Limpar telefone: remover caracteres não numéricos e remover código do país (55) se presente
+                let telefoneLimpo = telefoneUsuario.replace(/\D/g, '');
+                if (telefoneLimpo.startsWith('55') && telefoneLimpo.length === 12) {
+                    telefoneLimpo = telefoneLimpo.substring(2); // Remove '55' do início
+                }
+
                 // Prepare LumeaPag charge request
                 const lumeapagPayload = {
                     product: {
@@ -250,7 +256,7 @@
                         email: emailUsuario,
                         doc: dadosCpfValidado.cpf.replace(/\D/g, ''),
                         docType: 'cpf',
-                        phone: telefoneUsuario.replace(/\D/g, '')
+                        phone: telefoneLimpo
                     },
                     expiracaoSegundos: 3600,
                     callbackUrl: 'https://maiseducabrasil.info/webhook',
