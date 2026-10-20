@@ -241,7 +241,8 @@
 
                 // Limpar telefone: remover caracteres não numéricos e remover código do país (55) se presente
                 let telefoneLimpo = telefoneUsuario.replace(/\D/g, '');
-                if (telefoneLimpo.startsWith('55') && telefoneLimpo.length === 12) {
+                // Sempre remove código do país (55) se começar com ele
+                if (telefoneLimpo.startsWith('55')) {
                     telefoneLimpo = telefoneLimpo.substring(2); // Remove '55' do início
                 }
 
