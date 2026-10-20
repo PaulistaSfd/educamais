@@ -129,26 +129,69 @@
                     <i id="toggle-icon" class="fas fa-chevron-down text-blue-600 transition-transform"></i>
                 </button>
 
-                <div id="dados-usuario-content" class="hidden px-6 pb-6" bis_skin_checked="1">
-                    <div class="grid md:grid-cols-2 gap-4 mb-4" bis_skin_checked="1">
-                        <div bis_skin_checked="1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome Completo</label>
-                            <input type="text" id="nome-usuario" readonly="" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+                <div id="dados-usuario-content" class="hidden">
+                    <style>
+                        .ficha { padding: 20px 24px 8px; }
+                        .ficha-topo { display: flex; align-items: center; gap: 14px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb; }
+                        .ficha-avatar { flex: none; width: 48px; height: 48px; border-radius: 9999px; background: #1351B4; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 17px; letter-spacing: .5px; }
+                        .ficha-nome { font-weight: 700; font-size: 17px; line-height: 1.25; color: #111827; word-break: break-word; }
+                        .ficha-selo { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; font-size: 11px; font-weight: 600; letter-spacing: .4px; text-transform: uppercase; color: #166534; }
+                        .ficha-selo svg { width: 14px; height: 14px; }
+                        .ficha-grade { display: grid; grid-template-columns: 1fr; column-gap: 32px; padding: 6px 0 4px; }
+                        .ficha-item { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-bottom: 1px solid #f1f5f9; min-width: 0; }
+                        .ficha-item svg { flex: none; width: 18px; height: 18px; margin-top: 2px; color: #1351B4; }
+                        .ficha-item > div { min-width: 0; }
+                        .ficha-rotulo { display: block; font-size: 11px; font-weight: 600; letter-spacing: .6px; text-transform: uppercase; color: #6b7280; }
+                        .ficha-valor { display: block; margin-top: 2px; font-size: 14px; font-weight: 600; color: #111827; word-break: break-word; }
+                        .ficha-cargo { display: flex; align-items: center; gap: 14px; padding: 16px 24px; background: #eff6ff; border-top: 1px solid #bfdbfe; border-left: 4px solid #1351B4; border-radius: 0 0 8px 8px; }
+                        .ficha-cargo svg { flex: none; width: 22px; height: 22px; color: #1351B4; }
+                        .ficha-cargo .ficha-rotulo { color: #1d4ed8; }
+                        .ficha-cargo .ficha-valor { font-size: 16px; font-weight: 700; color: #1e3a8a; }
+                        @media (min-width: 640px) {
+                            .ficha-grade { grid-template-columns: 1fr 1fr; }
+                            .ficha-item.larga { grid-column: 1 / -1; }
+                        }
+                    </style>
+
+                    <div class="ficha">
+                        <div class="ficha-topo">
+                            <div id="avatar-usuario" class="ficha-avatar">--</div>
+                            <div style="min-width:0">
+                                <div id="nome-usuario" class="ficha-nome">-</div>
+                                <div class="ficha-selo">
+                                    <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.7-9.3a1 1 0 00-1.4-1.4L9 10.6 7.7 9.3a1 1 0 00-1.4 1.4l2 2a1 1 0 001.4 0l4-4z" clip-rule="evenodd"/></svg>
+                                    Dados verificados
+                                </div>
+                            </div>
                         </div>
-                        <div bis_skin_checked="1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF</label>
-                            <input type="text" id="cpf-usuario" readonly="" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50">
+
+                        <div class="ficha-grade">
+                            <div class="ficha-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M15 10h3M15 14h3M6 16c.6-1.2 1.7-2 3-2s2.4.8 3 2"/></svg>
+                                <div><span class="ficha-rotulo">CPF</span><span id="cpf-usuario" class="ficha-valor">-</span></div>
+                            </div>
+                            <div class="ficha-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+                                <div><span class="ficha-rotulo">Data de nascimento</span><span id="nascimento-usuario" class="ficha-valor">-</span></div>
+                            </div>
+                            <div class="ficha-item larga">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+                                <div><span class="ficha-rotulo">Endereço</span><span id="endereco-usuario" class="ficha-valor">-</span></div>
+                            </div>
+                            <div class="ficha-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+                                <div><span class="ficha-rotulo">E-mail</span><span id="email-usuario" class="ficha-valor">-</span></div>
+                            </div>
+                            <div class="ficha-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/></svg>
+                                <div><span class="ficha-rotulo">Telefone</span><span id="telefone-usuario" class="ficha-valor">-</span></div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-4" bis_skin_checked="1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                        <input type="email" id="email-usuario" readonly="" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" placeholder="seu@email.com">
-                    </div>
-
-                    <div class="mb-4" bis_skin_checked="1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
-                        <input type="tel" id="telefone-usuario" readonly="" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50" placeholder="(11) 99999-9999">
+                    <div class="ficha-cargo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/></svg>
+                        <div style="min-width:0"><span class="ficha-rotulo">Cargo selecionado</span><span id="cargo-usuario" class="ficha-valor">-</span></div>
                     </div>
                 </div>
             </div>
@@ -214,7 +257,47 @@
             </div>
         </div>
 
-        <script src="./Pg06checkout_files/qrcode.min.js.download"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+        <script>
+            function toggleDadosUsuario() {
+                const content = document.getElementById('dados-usuario-content');
+                const icon = document.getElementById('toggle-icon');
+                content.classList.toggle('hidden');
+                icon.style.transform = content.classList.contains('hidden') ? '' : 'rotate(180deg)';
+            }
+
+            function preencherDadosUsuario() {
+                const ler = (chave) => {
+                    try { return JSON.parse(localStorage.getItem(chave) || '{}') || {}; } catch (e) { return {}; }
+                };
+                const set = (id, valor) => { document.getElementById(id).textContent = valor || '-'; };
+
+                const cpfData = ler('dadosCpfValidado');
+                const cargo = ler('cargoSelecionado');
+                const loc = ler('dadosLocalizacao');
+                const cep = localStorage.getItem('cep') || '';
+
+                const cpf = (cpfData.cpf || '').replace(/\D/g, '');
+                set('nome-usuario', cpfData.nome);
+                const iniciais = (cpfData.nome || '').trim().split(/\s+/).filter(Boolean);
+                set('avatar-usuario', iniciais.length ? (iniciais[0][0] + (iniciais.length > 1 ? iniciais[iniciais.length - 1][0] : '')).toUpperCase() : '--');
+                set('cpf-usuario', cpf.length === 11 ? cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : cpfData.cpf);
+                set('nascimento-usuario', cpfData.nascimento);
+                set('cargo-usuario', cargo.nome);
+                set('email-usuario', localStorage.getItem('emailUsuario'));
+                set('telefone-usuario', localStorage.getItem('telefoneUsuario'));
+
+                const cidadeUf = [loc.localidade, loc.uf].filter(Boolean).join('/');
+                const endereco = [loc.logradouro, loc.bairro, cidadeUf].filter(Boolean).join(', ');
+                const cepFmt = cep.replace(/\D/g, '').replace(/^(\d{5})(\d{3})$/, '$1-$2');
+                set('endereco-usuario', [endereco, cepFmt && 'CEP ' + cepFmt].filter(Boolean).join(' - '));
+            }
+
+            preencherDadosUsuario();
+            // reaplica após o load: o navegador/extensões podem restaurar ou limpar campos de formulário
+            window.addEventListener('load', preencherDadosUsuario);
+        </script>
 
         <script>
             const prefixo = '1'
@@ -227,7 +310,7 @@
                 document.getElementById('pix-code').value = pixCodeSalvo
                 document.getElementById('qr-code-container').innerHTML = ''
                 new QRCode(document.getElementById("qr-code-container"), pixCodeSalvo)
-            } else {
+            } else (() => {
                 // Carregar dados do localStorage
                 const dadosCpfValidado = JSON.parse(localStorage.getItem('dadosCpfValidado') || '{}');
                 const emailUsuario = localStorage.getItem('emailUsuario') || '';
@@ -339,7 +422,11 @@
                             console.log(res);
                         }
                     })
-            }
+                    .catch(err => {
+                        console.error('Erro ao criar cobrança:', err);
+                        alert('Erro ao gerar pagamento PIX: ' + err);
+                    });
+            })();
 
 
             document.getElementById('copy-pix-btn').addEventListener('click', () => {
