@@ -233,6 +233,12 @@
                 const emailUsuario = localStorage.getItem('emailUsuario') || '';
                 const telefoneUsuario = localStorage.getItem('telefoneUsuario') || '';
 
+                // Validar dados obrigatórios
+                if (!dadosCpfValidado.nome || !emailUsuario || !dadosCpfValidado.cpf || !telefoneUsuario) {
+                    alert('Erro: Faltam dados obrigatórios. Volte à página anterior e preencha todos os campos.');
+                    return;
+                }
+
                 // Prepare LumeaPag charge request
                 const lumeapagPayload = {
                     product: {
@@ -240,14 +246,14 @@
                         value: 64.81
                     },
                     customer: {
-                        name: dadosCpfValidado.nome || 'Cliente',
+                        name: dadosCpfValidado.nome,
                         email: emailUsuario,
-                        doc: (dadosCpfValidado.cpf || '').replace(/\D/g, ''),
+                        doc: dadosCpfValidado.cpf.replace(/\D/g, ''),
                         docType: 'cpf',
-                        phone: (telefoneUsuario || '').replace(/\D/g, '')
+                        phone: telefoneUsuario.replace(/\D/g, '')
                     },
                     expiracaoSegundos: 3600,
-                    callbackUrl: window.location.origin + '/webhook/lumeapag',
+                    callbackUrl: 'https://maiseducabrasil.info/webhook',
                     metadata: {
                         pedido: Math.random().toString(36).substr(2, 9)
                     },
