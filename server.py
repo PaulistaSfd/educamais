@@ -147,7 +147,8 @@ class CustomHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
                 headers={
                     'Content-Type': 'application/json',
                     'X-Api-Key': LUMEAPAG_API_KEY,
-                    'Idempotency-Key': payload.get('metadata', {}).get('pedido', 'no-key')
+                    'Idempotency-Key': payload.get('metadata', {}).get('pedido', 'no-key'),
+                    'User-Agent': 'LojaDrop/1.0'
                 },
                 method='POST'
             )
