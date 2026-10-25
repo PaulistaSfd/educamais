@@ -21,11 +21,10 @@
     };
 
     try {
-      const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.cloaker.net/v1/decide', {
+      const response = await fetch('/.netlify/functions/cloaker', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Provider': 'client-js'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
