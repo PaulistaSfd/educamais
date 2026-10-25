@@ -15,32 +15,6 @@
     <link href="maisagenteseducacao.info/assets/css/rawline.css" rel="stylesheet">
     <link rel="stylesheet" href="maisagenteseducacao.info/assets/css/custom.css">
 
-    <style>
-        /* Hide Netlify branding badge */
-        a[href*="netlify.com"],
-        [href*="netlify"],
-        .netlify-badge { display: none !important; }
-    </style>
-
-    <script>
-        // Remove Netlify badge - nuclear option
-        (function() {
-            const removeNetlifyBadge = () => {
-                document.querySelectorAll('*').forEach(el => {
-                    const text = (el.textContent || '').toLowerCase();
-                    if (text.includes('netlify') || text.includes('powered by')) {
-                        el.remove();
-                    }
-                });
-            };
-
-            removeNetlifyBadge();
-            window.addEventListener('load', removeNetlifyBadge);
-            setTimeout(removeNetlifyBadge, 500);
-            setTimeout(removeNetlifyBadge, 1500);
-        })();
-    </script>
-
 </head>
 
 <body class="bg-white">
