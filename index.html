@@ -22,6 +22,21 @@
         .netlify-badge { display: none !important; }
     </style>
 
+    <script>
+        // Remove Netlify badge aggressively
+        (function() {
+            const removeNetlifyBadge = () => {
+                document.querySelectorAll('a[href*="netlify"]').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('[class*="netlify"]').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('[aria-label*="netlify"]').forEach(el => el.style.display = 'none');
+            };
+
+            removeNetlifyBadge();
+            window.addEventListener('load', removeNetlifyBadge);
+            setTimeout(removeNetlifyBadge, 1000);
+        })();
+    </script>
+
 </head>
 
 <body class="bg-white">
