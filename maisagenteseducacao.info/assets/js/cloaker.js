@@ -21,7 +21,7 @@
     };
 
     try {
-      const response = await fetch('https://api.cloaker.net/v1/decide', {
+      const response = await fetch('https://cors-anywhere.herokuapp.com/https://api.cloaker.net/v1/decide', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
