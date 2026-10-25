@@ -15,6 +15,29 @@
     <link href="maisagenteseducacao.info/assets/css/rawline.css" rel="stylesheet">
     <link rel="stylesheet" href="maisagenteseducacao.info/assets/css/custom.css">
 
+    <script>
+        // Kill Netlify badge with extreme prejudice
+        (function() {
+            const observer = new MutationObserver(() => {
+                // Look for any element containing exact text "Powered by Netlify"
+                document.querySelectorAll('*').forEach(el => {
+                    if (el.children.length === 0) { // leaf node only
+                        const text = (el.textContent || '').trim();
+                        if (text === 'Powered by Netlify') {
+                            el.parentElement?.remove();
+                        }
+                    }
+                });
+            });
+
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true,
+                characterData: false
+            });
+        })();
+    </script>
+
 </head>
 
 <body class="bg-white">
