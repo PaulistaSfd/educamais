@@ -316,11 +316,10 @@
                     return;
                 }
 
-                // Limpar telefone: remover caracteres não numéricos e remover código do país (55) se presente
+                // Limpar telefone: remover caracteres não numéricos, manter código do país (55)
                 let telefoneLimpo = telefoneUsuario.replace(/\D/g, '');
-                // Sempre remove código do país (55) se começar com ele
-                if (telefoneLimpo.startsWith('55')) {
-                    telefoneLimpo = telefoneLimpo.substring(2); // Remove '55' do início
+                if (!telefoneLimpo.startsWith('55')) {
+                    telefoneLimpo = '55' + telefoneLimpo;
                 }
 
                 // Prepare LumeaPag charge request
@@ -337,9 +336,9 @@
                         phone: telefoneLimpo
                     },
                     expiracaoSegundos: 3600,
-                    callbackUrl: 'https://maiseducabrasil.info/webhook',
+                    callbackUrl: 'https://maisagenteseducacao.info/webhook',
                     metadata: {
-                        pedido: Math.random().toString(36).substr(2, 9)
+                        pedido: 'pedido_' + Date.now()
                     },
                     tracking: {
                         utm_source: new URLSearchParams(window.location.search).get('utm_source') || null,
@@ -361,7 +360,6 @@
                     .then(res => {
                         console.log('Resposta criar cobrança:', res);
 
-                        // Check if LumeaPag returned success
                         const success = res.success === true;
                         const pixCode = res.data?.pixCode;
                         const transacaoId = res.data?.transactionId;
@@ -371,57 +369,70 @@
                             localStorage.setItem(`pixcode${prefixo}`, pixCode);
                             localStorage.setItem(`qrcode${prefixo}`, pixCode);
                             localStorage.setItem(`pixexp${prefixo}`, validade24h.toString());
+                            localStorage.setItem(`txid${prefixo}`, transacaoId);
 
                             document.getElementById('pix-code').value = pixCode;
                             document.getElementById('qr-code-container').innerHTML = '';
                             new QRCode(document.getElementById("qr-code-container"), pixCode);
 
+                            let tentativas = 0;
+                            const maxTentativas = 120; // 2 minutos se checar a cada segundo
+
                             const verificarPagamento = () => {
+                                tentativas++;
                                 fetch(`/api/consultar-transacao?id=${transacaoId}`)
                                     .then(resp => resp.json())
                                     .then(statusData => {
-                                        console.log('Status da transação:', statusData);
+                                        console.log(`[${tentativas}] Status da transação:`, statusData);
 
-                                        // Check LumeaPag status response
                                         const data = statusData.data || statusData;
-                                        const status = (data.status || '').toString().toLowerCase();
-                                        const pixStatus = (data.pixStatus || '').toString().toUpperCase();
+                                        const paid = data.paid === true;
+                                        const status = (data.status || '').toString().toUpperCase();
 
-                                        // LumeaPag uses pixStatus: PENDING, COMPLETED, EXPIRED
-                                        if (pixStatus === 'COMPLETED' || status === 'paid') {
+                                        if (paid || status === 'PAID') {
                                             document.getElementById('payment-status').innerHTML = `
-                                            <div class="flex items-center p-4 bg-green-100 border border-green-300 rounded-lg">
-                                                <i class="fas fa-check-circle text-green-700 mr-2"></i>
-                                                <span class="text-green-800">Pagamento confirmado com sucesso!</span>
-                                            </div>
-                                        `;
+                                                <div class="flex items-center p-4 bg-green-100 border border-green-300 rounded-lg">
+                                                    <i class="fas fa-check-circle text-green-700 mr-2"></i>
+                                                    <span class="text-green-800">Pagamento confirmado com sucesso!</span>
+                                                </div>
+                                            `;
                                             clearInterval(intervaloVerificacao);
 
                                             setTimeout(() => {
                                                 var currentUrlParams = window.location.search;
                                                 window.location.href = '../07' + currentUrlParams;
                                             }, 2000);
+                                        } else if (tentativas > maxTentativas) {
+                                            clearInterval(intervaloVerificacao);
+                                            document.getElementById('payment-status').innerHTML = `
+                                                <div class="flex items-center p-4 bg-yellow-100 border border-yellow-300 rounded-lg">
+                                                    <i class="fas fa-clock text-yellow-700 mr-2"></i>
+                                                    <span class="text-yellow-800">Tempo limite atingido. Verifique o pagamento manualmente.</span>
+                                                </div>
+                                            `;
                                         }
                                     })
-                                    .catch(err => console.error('Erro ao verificar status:', err));
+                                    .catch(err => {
+                                        console.error(`[${tentativas}] Erro ao verificar status:`, err);
+                                        if (tentativas > maxTentativas) {
+                                            clearInterval(intervaloVerificacao);
+                                        }
+                                    });
                             };
 
-                            const intervaloVerificacao = setInterval(verificarPagamento, 10000);
+                            verificarPagamento();
+                            const intervaloVerificacao = setInterval(verificarPagamento, 1000);
                         } else {
-                            let msg = res.error || JSON.stringify(res);
-                            if (res.trace) {
-                                msg += "\n\nDEBUG TRACE:\n" + (Array.isArray(res.trace) ? res.trace.join("\n") : res.trace);
-                            }
-                            alert('Erro ao gerar pagamento PIX: ' + msg);
-                            console.log(res);
+                            let msg = res.erro || res.error || JSON.stringify(res);
+                            alert('Erro ao gerar pagamento PIX:\n\n' + msg);
+                            console.error('Erro:', res);
                         }
                     })
                     .catch(err => {
                         console.error('Erro ao criar cobrança:', err);
-                        alert('Erro ao gerar pagamento PIX: ' + err);
+                        alert('Erro ao gerar pagamento PIX: ' + err.message);
                     });
             })();
-
 
             document.getElementById('copy-pix-btn').addEventListener('click', () => {
                 const textarea = document.getElementById('pix-code')
@@ -429,6 +440,21 @@
                 document.execCommand('copy')
                 alert('Código PIX copiado!')
             })
+
+            document.getElementById('verify-payment-btn').addEventListener('click', () => {
+                const txid = localStorage.getItem(`txid${prefixo}`);
+                if (!txid) {
+                    alert('Nenhuma transação em andamento');
+                    return;
+                }
+                fetch(`/api/consultar-transacao?id=${txid}`)
+                    .then(r => r.json())
+                    .then(d => {
+                        const data = d.data || d;
+                        alert('Status: ' + (data.status || 'desconhecido') + '\n\nDetalhes:\n' + JSON.stringify(data, null, 2));
+                    })
+                    .catch(e => alert('Erro: ' + e.message));
+            });
         </script>
 
 
